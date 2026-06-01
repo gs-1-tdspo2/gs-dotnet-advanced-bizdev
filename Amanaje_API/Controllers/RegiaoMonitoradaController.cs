@@ -1,5 +1,6 @@
 ﻿using Amanaje_API.Data;
 using Amanaje_API.DTOs;
+using Amanaje_API.Enums;
 using Amanaje_API.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -267,9 +268,9 @@ namespace Amanaje_API.Controllers
                     SgEstado = model.SgEstado,
                     NrLatitude = model.NrLatitude,
                     NrLongitude = model.NrLongitude,
-                    TpArea = model.TpArea,
+                    TpArea = model.TpArea.ToString(),
                     NrNivelVuln = model.NrNivelVuln,
-                    TpVisib = model.TpVisib,
+                    TpVisib = model.TpVisib.ToString(),
                     StAtivo = "S",
                     DtCriadoEm = DateTime.UtcNow
                 };
@@ -309,9 +310,9 @@ namespace Amanaje_API.Controllers
                 regiao.SgEstado = model.SgEstado;
                 regiao.NrLatitude = model.NrLatitude;
                 regiao.NrLongitude = model.NrLongitude;
-                regiao.TpArea = model.TpArea;
+                regiao.TpArea = model.TpArea.ToString();
                 regiao.NrNivelVuln = model.NrNivelVuln;
-                regiao.TpVisib = model.TpVisib;
+                regiao.TpVisib = model.TpVisib.ToString();
                 regiao.DtAtualizadoEm = DateTime.UtcNow;
 
                 _context.RegiaoMonitorada.Update(regiao);

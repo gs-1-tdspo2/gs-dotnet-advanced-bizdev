@@ -1,4 +1,6 @@
-﻿namespace Amanaje_API.DTOs
+﻿using Amanaje_API.Enums;
+
+namespace Amanaje_API.DTOs
 {
     public class RegiaoMonitoradaRequestDto
     {
@@ -8,8 +10,8 @@
         public string SgEstado { get; set; } = string.Empty;
         public decimal NrLatitude { get; set; }
         public decimal NrLongitude { get; set; }
-        public string TpArea { get; set; } = string.Empty;
+        public TipoArea TpArea { get; set; }
         public int NrNivelVuln { get; set; }
-        public string TpVisib { get; set; } = "PRIVADA";
+        public TipoVisibilidade TpVisib { get; set; } = TipoVisibilidade.PRIVADA;
     }
 }
