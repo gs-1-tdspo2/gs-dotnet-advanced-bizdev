@@ -19,6 +19,21 @@ namespace Amanaje_API.Controllers
             _context = context;
         }
 
+        private static ProcessamentoResponseDto MapToResponse(Processamento x) =>
+            new ProcessamentoResponseDto
+            {
+                IdProcessamento = x.IdProcessamento,
+                IdRegiao = x.IdRegiao,
+                IdUsuario = x.IdUsuario,
+                TpProcess = x.TpProcess,
+                StProcess = x.StProcess,
+                DsOrigem = x.DsOrigem,
+                DsParam = x.DsParam,
+                DsResult = x.DsResult,
+                DtInicio = x.DtInicio,
+                DtFim = x.DtFim
+            };
+
         [HttpGet]
         [SwaggerOperation(
             Summary = "Lista todos os processamentos",
@@ -38,21 +53,7 @@ namespace Amanaje_API.Controllers
                 if (!resultado.Any())
                     return NoContent();
 
-                var response = resultado.Select(x => new ProcessamentoResponseDto
-                {
-                    IdProcessamento = x.IdProcessamento,
-                    IdRegiao = x.IdRegiao,
-                    IdUsuario = x.IdUsuario,
-                    TpProcess = x.TpProcess,
-                    StProcess = x.StProcess,
-                    DsOrigem = x.DsOrigem,
-                    DsParam = x.DsParam,
-                    DsResult = x.DsResult,
-                    DtInicio = x.DtInicio,
-                    DtFim = x.DtFim
-                });
-
-                return Ok(response);
+                return Ok(resultado.Select(MapToResponse));
             }
             catch (Exception ex)
             {
@@ -79,21 +80,7 @@ namespace Amanaje_API.Controllers
                 if (processamento is null)
                     return NotFound();
 
-                var response = new ProcessamentoResponseDto
-                {
-                    IdProcessamento = processamento.IdProcessamento,
-                    IdRegiao = processamento.IdRegiao,
-                    IdUsuario = processamento.IdUsuario,
-                    TpProcess = processamento.TpProcess,
-                    StProcess = processamento.StProcess,
-                    DsOrigem = processamento.DsOrigem,
-                    DsParam = processamento.DsParam,
-                    DsResult = processamento.DsResult,
-                    DtInicio = processamento.DtInicio,
-                    DtFim = processamento.DtFim
-                };
-
-                return Ok(response);
+                return Ok(MapToResponse(processamento));
             }
             catch (Exception ex)
             {
@@ -121,21 +108,7 @@ namespace Amanaje_API.Controllers
                 if (!resultado.Any())
                     return NoContent();
 
-                var response = resultado.Select(x => new ProcessamentoResponseDto
-                {
-                    IdProcessamento = x.IdProcessamento,
-                    IdRegiao = x.IdRegiao,
-                    IdUsuario = x.IdUsuario,
-                    TpProcess = x.TpProcess,
-                    StProcess = x.StProcess,
-                    DsOrigem = x.DsOrigem,
-                    DsParam = x.DsParam,
-                    DsResult = x.DsResult,
-                    DtInicio = x.DtInicio,
-                    DtFim = x.DtFim
-                });
-
-                return Ok(response);
+                return Ok(resultado.Select(MapToResponse));
             }
             catch (Exception ex)
             {
@@ -163,21 +136,7 @@ namespace Amanaje_API.Controllers
                 if (!resultado.Any())
                     return NoContent();
 
-                var response = resultado.Select(x => new ProcessamentoResponseDto
-                {
-                    IdProcessamento = x.IdProcessamento,
-                    IdRegiao = x.IdRegiao,
-                    IdUsuario = x.IdUsuario,
-                    TpProcess = x.TpProcess,
-                    StProcess = x.StProcess,
-                    DsOrigem = x.DsOrigem,
-                    DsParam = x.DsParam,
-                    DsResult = x.DsResult,
-                    DtInicio = x.DtInicio,
-                    DtFim = x.DtFim
-                });
-
-                return Ok(response);
+                return Ok(resultado.Select(MapToResponse));
             }
             catch (Exception ex)
             {
@@ -212,15 +171,15 @@ namespace Amanaje_API.Controllers
                     IdUsuario = model.IdUsuario,
                     TpProcess = model.TpProcess.ToString(),
                     StProcess = StatusProcessamento.INICIADO.ToString(),
-                    DsOrigem = model.DsOrigem,
-                    DsParam = model.DsParam,
+                    DsOrigem = model.DsOrigem.Trim(),
+                    DsParam = model.DsParam?.Trim(),
                     DtInicio = DateTime.UtcNow
                 };
 
                 _context.Processamento.Add(processamento);
                 await _context.SaveChangesAsync();
 
-                return CreatedAtAction(nameof(GetProcessamentoById), new { id = processamento.IdProcessamento }, processamento);
+                return CreatedAtAction(nameof(GetProcessamentoById), new { id = processamento.IdProcessamento }, MapToResponse(processamento));
             }
             catch (Exception ex)
             {
@@ -228,39 +187,6 @@ namespace Amanaje_API.Controllers
             }
         }
 
-        [HttpPut("{id}/status")]
-        [SwaggerOperation(
-            Summary = "Atualizar status do processamento",
-            Description = "Atualiza o status e o resultado de um processamento existente. Quando o status for CONCLUIDO ou FALHOU, registra a data de fim."
-        )]
-        [SwaggerResponse(statusCode: 200, description: "Status atualizado com sucesso", type: typeof(ProcessamentoResponseDto))]
-        [SwaggerResponse(statusCode: 404, description: "Processamento não encontrado")]
-        [SwaggerResponse(statusCode: 400, description: "Erro ao atualizar o status", type: typeof(string))]
-        public async Task<IActionResult> UpdateStatusProcessamento(int id, StatusProcessamento status, string? dsResult = null)
-        {
-            try
-            {
-                var processamento = await _context.Processamento
-                    .FirstOrDefaultAsync(x => x.IdProcessamento == id);
 
-                if (processamento is null)
-                    return NotFound();
-
-                processamento.StProcess = status.ToString();
-                processamento.DsResult = dsResult;
-
-                if (status == StatusProcessamento.CONCLUIDO || status == StatusProcessamento.FALHOU)
-                    processamento.DtFim = DateTime.UtcNow;
-
-                _context.Processamento.Update(processamento);
-                await _context.SaveChangesAsync();
-
-                return Ok(processamento);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
     }
 }

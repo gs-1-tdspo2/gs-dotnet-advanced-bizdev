@@ -19,6 +19,24 @@ namespace Amanaje_API.Controllers
             _context = context;
         }
 
+        private static RegiaoMonitoradaResponseDto MapToResponse(RegiaoMonitorada x) =>
+            new RegiaoMonitoradaResponseDto
+            {
+                IdRegiao = x.IdRegiao,
+                IdCliente = x.IdCliente,
+                NmRegiao = x.NmRegiao,
+                NmCidade = x.NmCidade,
+                SgEstado = x.SgEstado,
+                NrLatitude = x.NrLatitude,
+                NrLongitude = x.NrLongitude,
+                TpArea = x.TpArea,
+                NrNivelVuln = x.NrNivelVuln,
+                TpVisib = x.TpVisib,
+                StAtivo = x.StAtivo,
+                DtCriadoEm = x.DtCriadoEm,
+                DtAtualizadoEm = x.DtAtualizadoEm
+            };
+
         [HttpGet]
         [SwaggerOperation(
             Summary = "Lista todas as regiões monitoradas",
@@ -38,24 +56,7 @@ namespace Amanaje_API.Controllers
                 if (!resultado.Any())
                     return NoContent();
 
-                var response = resultado.Select(x => new RegiaoMonitoradaResponseDto
-                {
-                    IdRegiao = x.IdRegiao,
-                    IdCliente = x.IdCliente,
-                    NmRegiao = x.NmRegiao,
-                    NmCidade = x.NmCidade,
-                    SgEstado = x.SgEstado,
-                    NrLatitude = x.NrLatitude,
-                    NrLongitude = x.NrLongitude,
-                    TpArea = x.TpArea,
-                    NrNivelVuln = x.NrNivelVuln,
-                    TpVisib = x.TpVisib,
-                    StAtivo = x.StAtivo,
-                    DtCriadoEm = x.DtCriadoEm,
-                    DtAtualizadoEm = x.DtAtualizadoEm
-                });
-
-                return Ok(response);
+                return Ok(resultado.Select(MapToResponse));
             }
             catch (Exception ex)
             {
@@ -83,24 +84,7 @@ namespace Amanaje_API.Controllers
                 if (!resultado.Any())
                     return NoContent();
 
-                var response = resultado.Select(x => new RegiaoMonitoradaResponseDto
-                {
-                    IdRegiao = x.IdRegiao,
-                    IdCliente = x.IdCliente,
-                    NmRegiao = x.NmRegiao,
-                    NmCidade = x.NmCidade,
-                    SgEstado = x.SgEstado,
-                    NrLatitude = x.NrLatitude,
-                    NrLongitude = x.NrLongitude,
-                    TpArea = x.TpArea,
-                    NrNivelVuln = x.NrNivelVuln,
-                    TpVisib = x.TpVisib,
-                    StAtivo = x.StAtivo,
-                    DtCriadoEm = x.DtCriadoEm,
-                    DtAtualizadoEm = x.DtAtualizadoEm
-                });
-
-                return Ok(response);
+                return Ok(resultado.Select(MapToResponse));
             }
             catch (Exception ex)
             {
@@ -128,24 +112,7 @@ namespace Amanaje_API.Controllers
                 if (!resultado.Any())
                     return NoContent();
 
-                var response = resultado.Select(x => new RegiaoMonitoradaResponseDto
-                {
-                    IdRegiao = x.IdRegiao,
-                    IdCliente = x.IdCliente,
-                    NmRegiao = x.NmRegiao,
-                    NmCidade = x.NmCidade,
-                    SgEstado = x.SgEstado,
-                    NrLatitude = x.NrLatitude,
-                    NrLongitude = x.NrLongitude,
-                    TpArea = x.TpArea,
-                    NrNivelVuln = x.NrNivelVuln,
-                    TpVisib = x.TpVisib,
-                    StAtivo = x.StAtivo,
-                    DtCriadoEm = x.DtCriadoEm,
-                    DtAtualizadoEm = x.DtAtualizadoEm
-                });
-
-                return Ok(response);
+                return Ok(resultado.Select(MapToResponse));
             }
             catch (Exception ex)
             {
@@ -172,24 +139,7 @@ namespace Amanaje_API.Controllers
                 if (regiao is null)
                     return NotFound();
 
-                var response = new RegiaoMonitoradaResponseDto
-                {
-                    IdRegiao = regiao.IdRegiao,
-                    IdCliente = regiao.IdCliente,
-                    NmRegiao = regiao.NmRegiao,
-                    NmCidade = regiao.NmCidade,
-                    SgEstado = regiao.SgEstado,
-                    NrLatitude = regiao.NrLatitude,
-                    NrLongitude = regiao.NrLongitude,
-                    TpArea = regiao.TpArea,
-                    NrNivelVuln = regiao.NrNivelVuln,
-                    TpVisib = regiao.TpVisib,
-                    StAtivo = regiao.StAtivo,
-                    DtCriadoEm = regiao.DtCriadoEm,
-                    DtAtualizadoEm = regiao.DtAtualizadoEm
-                };
-
-                return Ok(response);
+                return Ok(MapToResponse(regiao));
             }
             catch (Exception ex)
             {
@@ -217,24 +167,7 @@ namespace Amanaje_API.Controllers
                 if (!resultado.Any())
                     return NoContent();
 
-                var response = resultado.Select(x => new RegiaoMonitoradaResponseDto
-                {
-                    IdRegiao = x.IdRegiao,
-                    IdCliente = x.IdCliente,
-                    NmRegiao = x.NmRegiao,
-                    NmCidade = x.NmCidade,
-                    SgEstado = x.SgEstado,
-                    NrLatitude = x.NrLatitude,
-                    NrLongitude = x.NrLongitude,
-                    TpArea = x.TpArea,
-                    NrNivelVuln = x.NrNivelVuln,
-                    TpVisib = x.TpVisib,
-                    StAtivo = x.StAtivo,
-                    DtCriadoEm = x.DtCriadoEm,
-                    DtAtualizadoEm = x.DtAtualizadoEm
-                });
-
-                return Ok(response);
+                return Ok(resultado.Select(MapToResponse));
             }
             catch (Exception ex)
             {
@@ -263,9 +196,9 @@ namespace Amanaje_API.Controllers
                 var regiao = new RegiaoMonitorada
                 {
                     IdCliente = model.IdCliente,
-                    NmRegiao = model.NmRegiao,
-                    NmCidade = model.NmCidade,
-                    SgEstado = model.SgEstado,
+                    NmRegiao = model.NmRegiao.Trim(),
+                    NmCidade = model.NmCidade.Trim(),
+                    SgEstado = model.SgEstado.Trim().ToUpper(),
                     NrLatitude = model.NrLatitude,
                     NrLongitude = model.NrLongitude,
                     TpArea = model.TpArea.ToString(),
@@ -278,7 +211,7 @@ namespace Amanaje_API.Controllers
                 _context.RegiaoMonitorada.Add(regiao);
                 await _context.SaveChangesAsync();
 
-                return CreatedAtAction(nameof(GetRegiaoById), new { id = regiao.IdRegiao }, regiao);
+                return CreatedAtAction(nameof(GetRegiaoById), new { id = regiao.IdRegiao }, MapToResponse(regiao));
             }
             catch (Exception ex)
             {
@@ -305,9 +238,9 @@ namespace Amanaje_API.Controllers
                 if (regiao is null)
                     return NotFound();
 
-                regiao.NmRegiao = model.NmRegiao;
-                regiao.NmCidade = model.NmCidade;
-                regiao.SgEstado = model.SgEstado;
+                regiao.NmRegiao = model.NmRegiao.Trim();
+                regiao.NmCidade = model.NmCidade.Trim();
+                regiao.SgEstado = model.SgEstado.Trim().ToUpper();
                 regiao.NrLatitude = model.NrLatitude;
                 regiao.NrLongitude = model.NrLongitude;
                 regiao.TpArea = model.TpArea.ToString();
@@ -318,7 +251,7 @@ namespace Amanaje_API.Controllers
                 _context.RegiaoMonitorada.Update(regiao);
                 await _context.SaveChangesAsync();
 
-                return Ok(regiao);
+                return Ok(MapToResponse(regiao));
             }
             catch (Exception ex)
             {
@@ -354,7 +287,7 @@ namespace Amanaje_API.Controllers
                 _context.RegiaoMonitorada.Update(regiao);
                 await _context.SaveChangesAsync();
 
-                return Ok(regiao);
+                return Ok(MapToResponse(regiao));
             }
             catch (Exception ex)
             {
@@ -387,7 +320,7 @@ namespace Amanaje_API.Controllers
                 _context.RegiaoMonitorada.Update(regiao);
                 await _context.SaveChangesAsync();
 
-                return Ok(regiao);
+                return Ok(MapToResponse(regiao));
             }
             catch (Exception ex)
             {

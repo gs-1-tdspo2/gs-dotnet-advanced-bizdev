@@ -1,36 +1,70 @@
-﻿namespace Amanaje_API.DTOs
+﻿using System.Text.Json.Serialization;
+
+namespace Amanaje_API.DTOs
 {
-    // Raiz da resposta da OpenMeteo
     public class OpenMeteoResponseDto
     {
+        [JsonPropertyName("latitude")]
         public double Latitude { get; set; }
+
+        [JsonPropertyName("longitude")]
         public double Longitude { get; set; }
+
+        [JsonPropertyName("current")]
         public OpenMeteoCurrent? Current { get; set; }
-        public OpenMeteoCurrentUnits? Current_Units { get; set; }
+
+        [JsonPropertyName("current_units")]
+        public OpenMeteoCurrentUnits? CurrentUnits { get; set; }
     }
 
-    // Bloco "current" com os valores climáticos atuais
     public class OpenMeteoCurrent
     {
+        [JsonPropertyName("time")]
         public string? Time { get; set; }
-        public double? Temperature_2m { get; set; }
-        public double? Relative_Humidity_2m { get; set; }
+
+        [JsonPropertyName("temperature_2m")]
+        public double? Temperature2m { get; set; }
+
+        [JsonPropertyName("relative_humidity_2m")]
+        public double? RelativeHumidity2m { get; set; }
+
+        [JsonPropertyName("precipitation")]
         public double? Precipitation { get; set; }
-        public double? Wind_Speed_10m { get; set; }
-        public double? Surface_Pressure { get; set; }
-        public double? Shortwave_Radiation { get; set; }
-        public double? Uv_Index { get; set; }
+
+        [JsonPropertyName("wind_speed_10m")]
+        public double? WindSpeed10m { get; set; }
+
+        [JsonPropertyName("surface_pressure")]
+        public double? SurfacePressure { get; set; }
+
+        [JsonPropertyName("shortwave_radiation")]
+        public double? ShortwaveRadiation { get; set; }
+
+        [JsonPropertyName("uv_index")]
+        public double? UvIndex { get; set; }
     }
 
-    // Bloco "current_units" para referência/documentação
     public class OpenMeteoCurrentUnits
     {
-        public string? Temperature_2m { get; set; }
-        public string? Relative_Humidity_2m { get; set; }
+        [JsonPropertyName("temperature_2m")]
+        public string? Temperature2m { get; set; }
+
+        [JsonPropertyName("relative_humidity_2m")]
+        public string? RelativeHumidity2m { get; set; }
+
+        [JsonPropertyName("precipitation")]
         public string? Precipitation { get; set; }
-        public string? Wind_Speed_10m { get; set; }
-        public string? Surface_Pressure { get; set; }
-        public string? Shortwave_Radiation { get; set; }
-        public string? Uv_Index { get; set; }
+
+        [JsonPropertyName("wind_speed_10m")]
+        public string? WindSpeed10m { get; set; }
+
+        [JsonPropertyName("surface_pressure")]
+        public string? SurfacePressure { get; set; }
+
+        [JsonPropertyName("shortwave_radiation")]
+        public string? ShortwaveRadiation { get; set; }
+
+        [JsonPropertyName("uv_index")]
+        public string? UvIndex { get; set; }
     }
 }

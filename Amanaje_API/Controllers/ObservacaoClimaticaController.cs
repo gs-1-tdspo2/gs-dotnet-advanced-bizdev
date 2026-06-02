@@ -214,7 +214,7 @@ namespace Amanaje_API.Controllers
                 var observacao = new ObservacaoClimatica
                 {
                     IdRegiao = model.IdRegiao,
-                    NmFonte = model.NmFonte,
+                    NmFonte = model.NmFonte.Trim(),
                     NrTemperaturaC = model.NrTemperaturaC,
                     NrUmidadePct = model.NrUmidadePct,
                     NrPrecipMm = model.NrPrecipMm,

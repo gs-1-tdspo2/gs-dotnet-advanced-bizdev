@@ -26,23 +26,28 @@ namespace Amanaje_API.Services
                 .FirstOrDefaultAsync(r => r.IdRegiao == idRegiao && r.StAtivo == "S")
                 ?? throw new KeyNotFoundException($"Região com ID {idRegiao} não encontrada ou inativa.");
 
-            // 2. Registra o início do processamento
+            // 2. Registra o processamento com status INICIADO
             var processamento = new Processamento
             {
                 IdRegiao = idRegiao,
                 TpProcess = TipoProcessamento.SINCRONIZACAO_CLIM.ToString(),
-                StProcess = StatusProcessamento.EM_EXECUCAO.ToString(),
+                StProcess = StatusProcessamento.INICIADO.ToString(),
                 DsOrigem = "Amanaje_API - ClimaService",
-                DsParam = $"lat={regiao.NrLatitude}&lon={regiao.NrLongitude}",
+                DsParam = $"lat={regiao.NrLatitude.ToString(System.Globalization.CultureInfo.InvariantCulture)}&lon={regiao.NrLongitude.ToString(System.Globalization.CultureInfo.InvariantCulture)}",
                 DtInicio = DateTime.UtcNow
             };
 
             _context.Processamento.Add(processamento);
             await _context.SaveChangesAsync();
 
+            // 3. Atualiza para EM_EXECUCAO antes de chamar a API externa
+            processamento.StProcess = StatusProcessamento.EM_EXECUCAO.ToString();
+            _context.Processamento.Update(processamento);
+            await _context.SaveChangesAsync();
+
             try
             {
-                // 3. Monta a URL e chama a OpenMeteo
+                // 4. Monta a URL e chama a OpenMeteo
                 var url = $"https://api.open-meteo.com/v1/forecast" +
                           $"?latitude={regiao.NrLatitude.ToString(System.Globalization.CultureInfo.InvariantCulture)}" +
                           $"&longitude={regiao.NrLongitude.ToString(System.Globalization.CultureInfo.InvariantCulture)}" +
@@ -55,25 +60,25 @@ namespace Amanaje_API.Services
                 var current = resposta.Current
                     ?? throw new Exception("Bloco 'current' ausente na resposta da OpenMeteo.");
 
-                // 4. Normaliza e persiste a observação climática
+                // 5. Normaliza e persiste a observação climática
                 var observacao = new ObservacaoClimatica
                 {
                     IdRegiao = idRegiao,
                     NmFonte = NomeFonte,
-                    NrTemperaturaC = current.Temperature_2m.HasValue ? (decimal)current.Temperature_2m.Value : null,
-                    NrUmidadePct = current.Relative_Humidity_2m.HasValue ? (decimal)current.Relative_Humidity_2m.Value : null,
+                    NrTemperaturaC = current.Temperature2m.HasValue ? (decimal)current.Temperature2m.Value : null,
+                    NrUmidadePct = current.RelativeHumidity2m.HasValue ? (decimal)current.RelativeHumidity2m.Value : null,
                     NrPrecipMm = current.Precipitation.HasValue ? (decimal)current.Precipitation.Value : null,
-                    NrVentoKmh = current.Wind_Speed_10m.HasValue ? (decimal)current.Wind_Speed_10m.Value : null,
-                    NrPressaoHpa = current.Surface_Pressure.HasValue ? (decimal)current.Surface_Pressure.Value : null,
-                    NrRadiacaoSolar = current.Shortwave_Radiation.HasValue ? (decimal)current.Shortwave_Radiation.Value : null,
-                    NrIndiceUv = current.Uv_Index.HasValue ? (decimal)current.Uv_Index.Value : null,
+                    NrVentoKmh = current.WindSpeed10m.HasValue ? (decimal)current.WindSpeed10m.Value : null,
+                    NrPressaoHpa = current.SurfacePressure.HasValue ? (decimal)current.SurfacePressure.Value : null,
+                    NrRadiacaoSolar = current.ShortwaveRadiation.HasValue ? (decimal)current.ShortwaveRadiation.Value : null,
+                    NrIndiceUv = current.UvIndex.HasValue ? (decimal)current.UvIndex.Value : null,
                     DtObs = DateTime.TryParse(current.Time, out var dtObs) ? dtObs : DateTime.UtcNow,
                     DtCriadoEm = DateTime.UtcNow
                 };
 
                 _context.ObservacaoClimatica.Add(observacao);
 
-                // 5. Atualiza o processamento como concluído
+                // 6. Atualiza o processamento como CONCLUIDO
                 processamento.StProcess = StatusProcessamento.CONCLUIDO.ToString();
                 processamento.DsResult = $"Observação registrada com sucesso. Fonte: {NomeFonte}";
                 processamento.DtFim = DateTime.UtcNow;
@@ -85,7 +90,7 @@ namespace Amanaje_API.Services
             }
             catch (Exception ex)
             {
-                // 6. Atualiza o processamento como falho
+                // 7. Atualiza o processamento como FALHOU
                 processamento.StProcess = StatusProcessamento.FALHOU.ToString();
                 processamento.DsResult = $"Erro: {ex.Message}";
                 processamento.DtFim = DateTime.UtcNow;
