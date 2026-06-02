@@ -1,4 +1,5 @@
 using Amanaje_API.Data;
+using Amanaje_API.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +16,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c => {
     c.EnableAnnotations();
 });
+
+builder.Services.AddHttpClient<IClimaService, ClimaService>();
+builder.Services.AddScoped<IClimaService, ClimaService>();
 
 var app = builder.Build();
 
