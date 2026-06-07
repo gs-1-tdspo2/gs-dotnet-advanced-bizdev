@@ -19,7 +19,7 @@ A API é responsável pelo **cadastro de regiões monitoradas**, **sincronizaç�
 
 ## Repositório
 
-[![GitHub](https://img.shields.io/badge/GitHub-Acessar%20Repositório-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/seu-usuario/amanaje-dotnet)
+[![GitHub](https://img.shields.io/badge/GitHub-Acessar%20Repositório-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/gs-1-tdspo2/gs-dotnet-advanced-bizdev)
 
 ---
 
@@ -54,8 +54,15 @@ Amanaje_API/
 │   ├── ProcessamentoController.cs
 │   └── ClimaController.cs
 ├── Data/                # ApplicationContext (EF Core)
-├── DTOs/                # Objetos de transferência de dados (Request / Response)
-├── Enums/               # TipoArea, TipoVisibilidade, TipoProcessamento, StatusProcessamento
+├── DTOs/                # Objetos de transferência de dados
+│   ├── RegiaoMonitoradaCreateDto.cs
+│   ├── RegiaoMonitoradaUpdateDto.cs
+│   ├── RegiaoMonitoradaResponseDto.cs
+│   ├── ObservacaoClimaticaRequestDto.cs
+│   ├── ObservacaoClimaticaResponseDto.cs
+│   ├── ProcessamentoRequestDto.cs
+│   ├── ProcessamentoResponseDto.cs
+│   └── OpenMeteoResponseDto.cs
 ├── Migrations/          # Migrations do banco Oracle
 ├── Models/              # Entities mapeadas
 │   └── Externals/       # Entities somente leitura (API Java)
@@ -79,7 +86,7 @@ As tabelas externas `TB_AMANAJE_CLI` e `TB_AMANAJE_USU` são mapeadas como entid
 - ASP.NET Core Web API
 - Entity Framework Core + Oracle Provider
 - Swashbuckle (Swagger / OpenAPI)
-- Oracle Database (compartilhado com API Java)
+- Oracle Database
 - [OpenMeteo API](https://open-meteo.com/)
 
 ---
@@ -94,7 +101,7 @@ As tabelas externas `TB_AMANAJE_CLI` e `TB_AMANAJE_USU` são mapeadas como entid
 ### 1. Clone o repositório
 
 ```bash
-git clone https://github.com/seu-usuario/amanaje-dotnet.git
+git clone https://github.com/gs-1-tdspo2/gs-dotnet-advanced-bizdev.git
 cd amanaje-dotnet
 ```
 
@@ -112,14 +119,13 @@ As credenciais do banco Oracle estão configuradas em `Amanaje_API/appsettings.j
 
 ### 3. Migrations
 
-As migrations foram geradas com o comando abaixo e estão disponíveis na pasta `Migrations/`:
+A migration foi gerada via **Package Manager Console** no Visual Studio e está disponível na pasta `Migrations/`:
 
-```bash
-dotnet ef migrations add InitialMigration
-dotnet ef database update
+```powershell
+Add-Migration InitialMigration
 ```
 
-> O banco Oracle foi modelado e criado previamente pela equipe. As migrations existem para fins de versionamento e rastreabilidade do schema.
+> O banco Oracle foi modelado e criado previamente pela equipe. A migration existe para fins de versionamento e rastreabilidade do schema — não é necessário executar `Update-Database`.
 
 ### 4. Execute a API
 
@@ -127,12 +133,12 @@ dotnet ef database update
 dotnet run
 ```
 
-A API estará disponível em `https://localhost:7001` (ou a porta configurada em `launchSettings.json`).
+A API estará disponível em `https://localhost:7025` (ou a porta configurada em `launchSettings.json`).
 
 ### 5. Acesse o Swagger
 
 ```
-https://localhost:7001/swagger
+https://localhost:7025/swagger
 ```
 
 ---
@@ -153,7 +159,7 @@ https://localhost:7001/swagger
 | PUT | `/api/regiao/reativar/{id}` | Reativa região inativa | 200 / 404 |
 | DELETE | `/api/regiao/{id}` | Inativa região (soft delete) | 200 / 404 |
 
-**POST / PUT — Body:**
+**POST — Body:**
 ```json
 {
   "idCliente": 1,
@@ -162,15 +168,29 @@ https://localhost:7001/swagger
   "sgEstado": "SP",
   "nrLatitude": -23.55,
   "nrLongitude": -46.63,
-  "tpArea": 1,
+  "tpArea": "ENCOSTA",
   "nrNivelVuln": 75,
-  "tpVisib": 0
+  "tpVisib": "PRIVADA"
 }
 ```
 
-> `tpArea` aceita: `PONTE (0)`, `ENCOSTA (1)`, `AREA_RURAL (2)`, `COMUNIDADE (3)`, `PROPRIEDADE_PRIVADA (4)`, `REGIAO_RIBEIRINHA (5)`, `AREA_URBANA (6)`, `OUTRA (7)`
+**PUT — Body** (`idCliente` não é atualizável):
+```json
+{
+  "nmRegiao": "Encosta Norte Atualizada",
+  "nmCidade": "São Paulo",
+  "sgEstado": "SP",
+  "nrLatitude": -23.55,
+  "nrLongitude": -46.63,
+  "tpArea": "ENCOSTA",
+  "nrNivelVuln": 80,
+  "tpVisib": "INSTITUCIONAL"
+}
+```
 
-> `tpVisib` aceita: `PRIVADA (0)`, `INSTITUCIONAL (1)`, `AGREGADA_PUBLICA (2)`
+> `tpArea`: `PONTE`, `ENCOSTA`, `AREA_RURAL`, `COMUNIDADE`, `PROPRIEDADE_PRIVADA`, `REGIAO_RIBEIRINHA`, `AREA_URBANA`, `OUTRA`
+
+> `tpVisib`: `PRIVADA`, `INSTITUCIONAL`, `AGREGADA_PUBLICA`
 
 ---
 
@@ -217,22 +237,26 @@ https://localhost:7001/swagger
 | GET | `/api/processamento/status/{status}` | Lista processamentos por status | 200 / 204 |
 | POST | `/api/processamento` | Registra novo processamento | 201 / 404 / 400 |
 
-> Sem `PUT` ou `DELETE` — o ciclo de vida do processamento é controlado internamente pelo `ClimaService`. Registros de processamento são auditoria e não devem ser alterados ou removidos.
+> Sem `PUT` — o ciclo de vida do processamento é controlado internamente pelo `ClimaService`. Alterar manualmente um processamento comprometeria a integridade do histórico de auditoria.
+
+> Sem `DELETE` — registros de processamento são auditoria imutável.
 
 **POST — Body:**
 ```json
 {
   "idRegiao": 1,
   "idUsuario": null,
-  "tpProcess": 0,
-  "dsOrigem": "Teste manual",
-  "dsParam": "lat=-23.55&lon=-46.63"
+  "tpProcess": "SINCRONIZACAO_CLIM",
+  "dsOrigem": "Amanaje_API",
+  "dsParam": null
 }
 ```
 
-> `tpProcess` aceita: `SINCRONIZACAO_CLIM (0)`, `CALCULO_RISCO (1)`, `GERACAO_IND (2)`, `GERACAO_ALERTA (3)`, `CARGA_DADOS (4)`, `ROTINA_PL_SQL (5)`, `OUTRO (6)`
+> `tpProcess` aceita: `SINCRONIZACAO_CLIM`, `CALCULO_RISCO`, `GERACAO_IND`, `GERACAO_ALERTA`, `CARGA_DADOS`, `ROTINA_PL_SQL`, `OUTRO`
 
 > O status inicial é sempre `INICIADO` — controlado pelo servidor.
+
+> `GET /api/processamento/status/{status}` — valores aceitos: `INICIADO`, `EM_EXECUCAO`, `CONCLUIDO`, `FALHOU`, `CANCELADO`
 
 ---
 
@@ -308,5 +332,5 @@ prints/
 - O banco Oracle é compartilhado com a **API Java** da equipe. As tabelas de `Cliente` e `Usuário` são gerenciadas pela API Java — a API .NET realiza apenas leitura dessas tabelas para validação de FKs.
 - Exclusões em `RegiaoMonitorada` são **lógicas** via `ST_ATIVO`, preservando a integridade referencial com observações e processamentos vinculados.
 - Exclusões em `ObservacaoClimatica` são **físicas**, pois a remoção de um dado de telemetria específico não compromete o histórico geral.
-- `Processamento` não possui exclusão — é registro de auditoria imutável.
+- `Processamento` não possui exclusão nem edição — é registro de auditoria imutável, gerenciado internamente pelo `ClimaService`.
 - A integração com a **OpenMeteo** é gratuita e não requer chave de API.
