@@ -1,6 +1,5 @@
 ﻿using Amanaje_API.Data;
 using Amanaje_API.DTOs;
-using Amanaje_API.Enums;
 using Amanaje_API.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -183,7 +182,7 @@ namespace Amanaje_API.Controllers
         [SwaggerResponse(statusCode: 201, description: "Região criada com sucesso", type: typeof(RegiaoMonitoradaResponseDto))]
         [SwaggerResponse(statusCode: 404, description: "Cliente informado não encontrado")]
         [SwaggerResponse(statusCode: 400, description: "Erro ao criar a região", type: typeof(string))]
-        public async Task<IActionResult> CreateRegiao(RegiaoMonitoradaRequestDto model)
+        public async Task<IActionResult> CreateRegiao(RegiaoMonitoradaCreateDto model)
         {
             try
             {
@@ -193,17 +192,24 @@ namespace Amanaje_API.Controllers
                 if (cliente is null)
                     return NotFound($"Cliente com ID {model.IdCliente} não encontrado.");
 
+                var nomeNormalizado = model.NmRegiao.Trim();
+                var regiaoExistente = await _context.RegiaoMonitorada
+                    .FirstOrDefaultAsync(x => x.IdCliente == model.IdCliente && x.NmRegiao == nomeNormalizado);
+
+                if (regiaoExistente is not null)
+                    return Conflict($"Já existe uma região chamada '{nomeNormalizado}' para o cliente com ID {model.IdCliente}.");
+
                 var regiao = new RegiaoMonitorada
                 {
                     IdCliente = model.IdCliente,
-                    NmRegiao = model.NmRegiao.Trim(),
+                    NmRegiao = nomeNormalizado,
                     NmCidade = model.NmCidade.Trim(),
                     SgEstado = model.SgEstado.Trim().ToUpper(),
                     NrLatitude = model.NrLatitude,
                     NrLongitude = model.NrLongitude,
-                    TpArea = model.TpArea.ToString(),
+                    TpArea = model.TpArea.ToUpper(),
                     NrNivelVuln = model.NrNivelVuln,
-                    TpVisib = model.TpVisib.ToString(),
+                    TpVisib = model.TpVisib.ToUpper(),
                     StAtivo = "S",
                     DtCriadoEm = DateTime.UtcNow
                 };
@@ -227,7 +233,7 @@ namespace Amanaje_API.Controllers
         [SwaggerResponse(statusCode: 200, description: "Região atualizada com sucesso", type: typeof(RegiaoMonitoradaResponseDto))]
         [SwaggerResponse(statusCode: 404, description: "Região não encontrada ou inativa")]
         [SwaggerResponse(statusCode: 400, description: "Erro ao atualizar os dados", type: typeof(string))]
-        public async Task<IActionResult> UpdateRegiao(int id, RegiaoMonitoradaRequestDto model)
+        public async Task<IActionResult> UpdateRegiao(int id, RegiaoMonitoradaUpdateDto model)
         {
             try
             {
@@ -238,14 +244,21 @@ namespace Amanaje_API.Controllers
                 if (regiao is null)
                     return NotFound();
 
-                regiao.NmRegiao = model.NmRegiao.Trim();
+                var nomeAtualizado = model.NmRegiao.Trim();
+                var regiaoComMesmoNome = await _context.RegiaoMonitorada
+                    .FirstOrDefaultAsync(x => x.IdCliente == regiao.IdCliente && x.NmRegiao == nomeAtualizado && x.IdRegiao != id);
+
+                if (regiaoComMesmoNome is not null)
+                    return Conflict($"Já existe outra região chamada '{nomeAtualizado}' para este cliente.");
+
+                regiao.NmRegiao = nomeAtualizado;
                 regiao.NmCidade = model.NmCidade.Trim();
                 regiao.SgEstado = model.SgEstado.Trim().ToUpper();
                 regiao.NrLatitude = model.NrLatitude;
                 regiao.NrLongitude = model.NrLongitude;
-                regiao.TpArea = model.TpArea.ToString();
+                regiao.TpArea = model.TpArea.ToUpper();
                 regiao.NrNivelVuln = model.NrNivelVuln;
-                regiao.TpVisib = model.TpVisib.ToString();
+                regiao.TpVisib = model.TpVisib.ToUpper();
                 regiao.DtAtualizadoEm = DateTime.UtcNow;
 
                 _context.RegiaoMonitorada.Update(regiao);

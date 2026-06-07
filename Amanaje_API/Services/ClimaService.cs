@@ -1,7 +1,6 @@
 ﻿using System.Net.Http.Json;
 using Amanaje_API.Data;
 using Amanaje_API.DTOs;
-using Amanaje_API.Enums;
 using Amanaje_API.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -30,8 +29,8 @@ namespace Amanaje_API.Services
             var processamento = new Processamento
             {
                 IdRegiao = idRegiao,
-                TpProcess = TipoProcessamento.SINCRONIZACAO_CLIM.ToString(),
-                StProcess = StatusProcessamento.INICIADO.ToString(),
+                TpProcess = "SINCRONIZACAO_CLIM",
+                StProcess = "INICIADO",
                 DsOrigem = "Amanaje_API - ClimaService",
                 DsParam = $"lat={regiao.NrLatitude.ToString(System.Globalization.CultureInfo.InvariantCulture)}&lon={regiao.NrLongitude.ToString(System.Globalization.CultureInfo.InvariantCulture)}",
                 DtInicio = DateTime.UtcNow
@@ -41,7 +40,7 @@ namespace Amanaje_API.Services
             await _context.SaveChangesAsync();
 
             // 3. Atualiza para EM_EXECUCAO antes de chamar a API externa
-            processamento.StProcess = StatusProcessamento.EM_EXECUCAO.ToString();
+            processamento.StProcess = "EM_EXECUCAO";
             _context.Processamento.Update(processamento);
             await _context.SaveChangesAsync();
 
@@ -79,7 +78,7 @@ namespace Amanaje_API.Services
                 _context.ObservacaoClimatica.Add(observacao);
 
                 // 6. Atualiza o processamento como CONCLUIDO
-                processamento.StProcess = StatusProcessamento.CONCLUIDO.ToString();
+                processamento.StProcess = "CONCLUIDO";
                 processamento.DsResult = $"Observação registrada com sucesso. Fonte: {NomeFonte}";
                 processamento.DtFim = DateTime.UtcNow;
 
@@ -91,7 +90,7 @@ namespace Amanaje_API.Services
             catch (Exception ex)
             {
                 // 7. Atualiza o processamento como FALHOU
-                processamento.StProcess = StatusProcessamento.FALHOU.ToString();
+                processamento.StProcess = "FALHOU";
                 processamento.DsResult = $"Erro: {ex.Message}";
                 processamento.DtFim = DateTime.UtcNow;
 

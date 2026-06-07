@@ -1,6 +1,5 @@
 ﻿using Amanaje_API.Data;
 using Amanaje_API.DTOs;
-using Amanaje_API.Enums;
 using Amanaje_API.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -124,13 +123,13 @@ namespace Amanaje_API.Controllers
         [SwaggerResponse(statusCode: 200, description: "Listagem retornada com sucesso", type: typeof(IEnumerable<ProcessamentoResponseDto>))]
         [SwaggerResponse(statusCode: 204, description: "Nenhum processamento encontrado para este status")]
         [SwaggerResponse(statusCode: 400, description: "Erro ao retornar os dados", type: typeof(string))]
-        public async Task<IActionResult> GetProcessamentosByStatus(StatusProcessamento status)
+        public async Task<IActionResult> GetProcessamentosByStatus(string status)
         {
             try
             {
                 var resultado = await _context.Processamento
                     .Include(x => x.Regiao)
-                    .Where(x => x.StProcess == status.ToString())
+                    .Where(x => x.StProcess == status.ToUpper())
                     .ToListAsync();
 
                 if (!resultado.Any())
@@ -169,8 +168,8 @@ namespace Amanaje_API.Controllers
                 {
                     IdRegiao = model.IdRegiao,
                     IdUsuario = model.IdUsuario,
-                    TpProcess = model.TpProcess.ToString(),
-                    StProcess = StatusProcessamento.INICIADO.ToString(),
+                    TpProcess = model.TpProcess.ToUpper(),
+                    StProcess = "INICIADO",
                     DsOrigem = model.DsOrigem.Trim(),
                     DsParam = model.DsParam?.Trim(),
                     DtInicio = DateTime.UtcNow

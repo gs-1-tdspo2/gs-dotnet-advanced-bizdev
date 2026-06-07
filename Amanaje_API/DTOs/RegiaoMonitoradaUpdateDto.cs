@@ -3,12 +3,8 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace Amanaje_API.DTOs
 {
-    public class RegiaoMonitoradaRequestDto
+    public class RegiaoMonitoradaUpdateDto
     {
-        [Required(ErrorMessage = "O ID do cliente é obrigatório.")]
-        [SwaggerSchema(Description = "ID do cliente responsável pela região", Format = "int32")]
-        public int IdCliente { get; set; } = 1;
-
         [Required(ErrorMessage = "O nome da região é obrigatório.")]
         [StringLength(150, MinimumLength = 1, ErrorMessage = "O nome da região deve ter entre 1 e 150 caracteres.")]
         [RegularExpression(@".*\S.*", ErrorMessage = "O nome da região não pode conter apenas espaços.")]
@@ -38,9 +34,9 @@ namespace Amanaje_API.DTOs
         public decimal NrLongitude { get; set; } = -46.63m;
 
         [Required(ErrorMessage = "O tipo de área é obrigatório.")]
-        [RegularExpression(@"^(PONTE|ENCOSTA|AREA_RURAL|COMUNIDADE|PROPRIEDADE_PRIVADA|REGIAO_RIBEIRINHA|AREA_URBANA|OUTRA)$",
+        [RegularExpression(@"^(?i)(PONTE|ENCOSTA|AREA_RURAL|COMUNIDADE|PROPRIEDADE_PRIVADA|REGIAO_RIBEIRINHA|AREA_URBANA|OUTRA)$",
             ErrorMessage = "Tipo de área inválido. Valores aceitos: PONTE, ENCOSTA, AREA_RURAL, COMUNIDADE, PROPRIEDADE_PRIVADA, REGIAO_RIBEIRINHA, AREA_URBANA, OUTRA.")]
-        [SwaggerSchema(Description = "Tipo da área monitorada — valores aceitos: PONTE, ENCOSTA, AREA_RURAL, COMUNIDADE, PROPRIEDADE_PRIVADA, REGIAO_RIBEIRINHA, AREA_URBANA, OUTRA")]
+        [SwaggerSchema(Description = "Tipo da área — valores aceitos: PONTE, ENCOSTA, AREA_RURAL, COMUNIDADE, PROPRIEDADE_PRIVADA, REGIAO_RIBEIRINHA, AREA_URBANA, OUTRA")]
         public string TpArea { get; set; } = "ENCOSTA";
 
         [Required(ErrorMessage = "O nível de vulnerabilidade é obrigatório.")]
@@ -49,7 +45,7 @@ namespace Amanaje_API.DTOs
         public int NrNivelVuln { get; set; } = 75;
 
         [Required(ErrorMessage = "O tipo de visibilidade é obrigatório.")]
-        [RegularExpression(@"^(PRIVADA|INSTITUCIONAL|AGREGADA_PUBLICA)$",
+        [RegularExpression(@"^(?i)(PRIVADA|INSTITUCIONAL|AGREGADA_PUBLICA)$",
             ErrorMessage = "Tipo de visibilidade inválido. Valores aceitos: PRIVADA, INSTITUCIONAL, AGREGADA_PUBLICA.")]
         [SwaggerSchema(Description = "Visibilidade dos dados — valores aceitos: PRIVADA, INSTITUCIONAL, AGREGADA_PUBLICA")]
         public string TpVisib { get; set; } = "PRIVADA";
