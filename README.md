@@ -77,6 +77,7 @@ Amanaje_API/
 A modelagem completa do banco está disponível para visualização:
 
 [Visualizar Diagrama Lógico](prints/AMANAJE_Logical.pdf)
+
 [Visualizar Diagrama Relacional](prints/AMANAJE_Relational.pdf)
 
 > Este repositório gerencia as tabelas: `TB_AMANAJE_REGIAO_MONIT`, `TB_AMANAJE_OBS_CLIM` e `TB_AMANAJE_PROCESS`. As demais tabelas do ecossistema (clientes, usuários, alertas, avaliações de risco, estações IoT) são de responsabilidade da **API Java** da equipe.
