@@ -144,7 +144,7 @@ namespace Amanaje_API.Controllers
             Description = "Retorna uma região monitorada específica pelo seu identificador."
         )]
         [SwaggerResponse(statusCode: 200, description: "Região retornada com sucesso", type: typeof(RegiaoMonitoradaResponseDto))]
-        [SwaggerResponse(statusCode: 404, description: "Região não encontrada")]
+        [SwaggerResponse(statusCode: 404, description: "Região não encontrada ou inativa")]
         [SwaggerResponse(statusCode: 400, description: "Erro ao retornar os dados", type: typeof(string))]
         public async Task<IActionResult> GetRegiaoById(int id)
         {
@@ -153,6 +153,7 @@ namespace Amanaje_API.Controllers
                 var regiao = await _context.RegiaoMonitorada
                     .Include(x => x.Cliente)
                     .Include(x => x.Observacoes)
+                    .Where(x => x.StAtivo == "S")
                     .FirstOrDefaultAsync(x => x.IdRegiao == id);
 
                 if (regiao is null)
