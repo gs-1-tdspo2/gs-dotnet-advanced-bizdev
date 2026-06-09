@@ -27,7 +27,7 @@ A API é responsável pelo **cadastro de regiões monitoradas**, **sincronizaç�
 
 | Tipo | Link |
 |------|------|
-| Demonstração da Solução | [Assistir no YouTube](https://www.youtube.com/watch?v=SEU_LINK_AQUI) |
+| Demonstração da Solução | [Assistir no YouTube](https://youtu.be/z9BUzs2HoyM) |
 | Pitch | [Assistir no YouTube](https://www.youtube.com/watch?v=SEU_LINK_PITCH_AQUI) |
 
 ---
