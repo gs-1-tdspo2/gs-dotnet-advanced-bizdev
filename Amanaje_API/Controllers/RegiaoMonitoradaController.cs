@@ -204,7 +204,7 @@ namespace Amanaje_API.Controllers
         [SwaggerResponse(statusCode: 409, description: "Já existe uma região com esse nome para o cliente informado")]
         [SwaggerResponse(statusCode: 404, description: "Cliente informado não encontrado")]
         [SwaggerResponse(statusCode: 400, description: "Erro ao criar a região", type: typeof(string))]
-        public async Task<IActionResult> CreateRegiao(RegiaoMonitoradaCreateDto model)
+        public async Task<IActionResult> CreateRegiao(RegiaoMonitoradaRequestDto model)
         {
             try
             {
@@ -256,7 +256,7 @@ namespace Amanaje_API.Controllers
         [SwaggerResponse(statusCode: 409, description: "Já existe outra região com esse nome para este cliente")]
         [SwaggerResponse(statusCode: 404, description: "Região não encontrada ou inativa")]
         [SwaggerResponse(statusCode: 400, description: "Erro ao atualizar os dados", type: typeof(string))]
-        public async Task<IActionResult> UpdateRegiao(int id, RegiaoMonitoradaUpdateDto model)
+        public async Task<IActionResult> UpdateRegiao(int id, RegiaoMonitoradaRequestDto model)
         {
             try
             {
