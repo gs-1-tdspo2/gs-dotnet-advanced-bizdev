@@ -54,9 +54,9 @@ Amanaje_API/
 │   ├── ProcessamentoController.cs
 │   └── ClimaController.cs
 ├── Data/                # ApplicationContext (EF Core)
+│   └── ApplicationContext.cs
 ├── DTOs/                # Objetos de transferência de dados
-│   ├── RegiaoMonitoradaCreateDto.cs
-│   ├── RegiaoMonitoradaUpdateDto.cs
+│   ├── RegiaoMonitoradaRequestDto.cs
 │   ├── RegiaoMonitoradaResponseDto.cs
 │   ├── ObservacaoClimaticaRequestDto.cs
 │   ├── ObservacaoClimaticaResponseDto.cs
@@ -65,8 +65,14 @@ Amanaje_API/
 │   └── OpenMeteoResponseDto.cs
 ├── Migrations/          # Migrations do banco Oracle
 ├── Models/              # Entities mapeadas
+│   ├── ObservacaoClimatica.cs
+│   ├── Processamento.cs
+│   ├── RegiaoMonitorada.cs
 │   └── Externals/       # Entities somente leitura (API Java)
+│       └── ExternalEntities.cs
 ├── Services/            # IClimaService + ClimaService (integração OpenMeteo)
+│   ├── ClimaService.cs
+│   └── IClimaService.cs
 └── prints/              # Evidências dos testes por endpoint
 ```
 
