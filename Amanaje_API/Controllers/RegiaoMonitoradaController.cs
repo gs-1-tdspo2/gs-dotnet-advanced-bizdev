@@ -52,6 +52,7 @@ namespace Amanaje_API.Controllers
                     }).ToList() ?? []
             };
 
+        /// <summary>Lista todas as regiões monitoradas</summary>
         [HttpGet]
         [SwaggerOperation(
             Summary = "Lista todas as regiões monitoradas",
@@ -80,6 +81,7 @@ namespace Amanaje_API.Controllers
             }
         }
 
+        /// <summary>Lista apenas as regiões monitoradas ativas</summary>
         [HttpGet("ativas")]
         [SwaggerOperation(
             Summary = "Lista regiões monitoradas ativas",
@@ -109,6 +111,7 @@ namespace Amanaje_API.Controllers
             }
         }
 
+        /// <summary>Lista apenas as regiões monitoradas inativas (excluídas logicamente)</summary>
         [HttpGet("inativas")]
         [SwaggerOperation(
             Summary = "Lista regiões monitoradas inativas",
@@ -138,6 +141,8 @@ namespace Amanaje_API.Controllers
             }
         }
 
+        /// <summary>Busca uma região monitorada pelo ID</summary>
+        /// <param name="id">Identificador único da região monitorada</param>
         [HttpGet("{id}")]
         [SwaggerOperation(
             Summary = "Busca região monitorada por ID",
@@ -167,6 +172,8 @@ namespace Amanaje_API.Controllers
             }
         }
 
+        /// <summary>Lista todas as regiões ativas vinculadas a um cliente</summary>
+        /// <param name="idCliente">Identificador do cliente</param>
         [HttpGet("cliente/{idCliente}")]
         [SwaggerOperation(
             Summary = "Lista regiões por cliente",
@@ -196,6 +203,8 @@ namespace Amanaje_API.Controllers
             }
         }
 
+        /// <summary>Cadastra uma nova região monitorada</summary>
+        /// <param name="model">Dados da região a ser criada</param>
         [HttpPost]
         [SwaggerOperation(
             Summary = "Cadastrar região monitorada",
@@ -248,6 +257,9 @@ namespace Amanaje_API.Controllers
             }
         }
 
+        /// <summary>Atualiza os dados de uma região monitorada ativa</summary>
+        /// <param name="id">Identificador único da região a ser atualizada</param>
+        /// <param name="model">Novos dados da região</param>
         [HttpPut("{id}")]
         [SwaggerOperation(
             Summary = "Atualizar região monitorada",
@@ -297,6 +309,8 @@ namespace Amanaje_API.Controllers
             }
         }
 
+        /// <summary>Reativa uma região monitorada previamente inativada</summary>
+        /// <param name="id">Identificador único da região a ser reativada</param>
         [HttpPut("reativar/{id}")]
         [SwaggerOperation(
             Summary = "Reativar região monitorada",
@@ -333,6 +347,8 @@ namespace Amanaje_API.Controllers
             }
         }
 
+        /// <summary>Inativa uma região monitorada (soft delete)</summary>
+        /// <param name="id">Identificador único da região a ser inativada</param>
         [HttpDelete("{id}")]
         [SwaggerOperation(
             Summary = "Inativar região monitorada (soft delete)",

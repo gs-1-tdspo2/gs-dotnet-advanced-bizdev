@@ -35,6 +35,7 @@ namespace Amanaje_API.Controllers
                 DtCriadoEm = x.DtCriadoEm
             };
 
+        /// <summary>Lista todas as observações climáticas registradas</summary>
         [HttpGet]
         [SwaggerOperation(
             Summary = "Lista todas as observações climáticas",
@@ -62,6 +63,8 @@ namespace Amanaje_API.Controllers
             }
         }
 
+        /// <summary>Busca uma observação climática pelo ID</summary>
+        /// <param name="id">Identificador único da observação climática</param>
         [HttpGet("{id}")]
         [SwaggerOperation(
             Summary = "Busca observação climática por ID",
@@ -89,6 +92,8 @@ namespace Amanaje_API.Controllers
             }
         }
 
+        /// <summary>Lista todas as observações climáticas de uma região</summary>
+        /// <param name="idRegiao">Identificador da região monitorada</param>
         [HttpGet("regiao/{idRegiao}")]
         [SwaggerOperation(
             Summary = "Lista observações por região",
@@ -117,6 +122,8 @@ namespace Amanaje_API.Controllers
             }
         }
 
+        /// <summary>Retorna a observação climática mais recente de uma região</summary>
+        /// <param name="idRegiao">Identificador da região monitorada</param>
         [HttpGet("regiao/{idRegiao}/ultima")]
         [SwaggerOperation(
             Summary = "Busca última observação de uma região",
@@ -146,6 +153,8 @@ namespace Amanaje_API.Controllers
             }
         }
 
+        /// <summary>Registra manualmente uma nova observação climática</summary>
+        /// <param name="model">Dados da observação a ser registrada</param>
         [HttpPost]
         [SwaggerOperation(
             Summary = "Registrar observação climática",
@@ -190,6 +199,8 @@ namespace Amanaje_API.Controllers
             }
         }
 
+        /// <summary>Remove permanentemente uma observação climática</summary>
+        /// <param name="id">Identificador único da observação a ser removida</param>
         [HttpDelete("{id}")]
         [SwaggerOperation(
             Summary = "Remover observação climática",

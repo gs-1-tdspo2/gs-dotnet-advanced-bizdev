@@ -1,6 +1,6 @@
 ﻿using Amanaje_API.Data;
-using Amanaje_API.Models;
 using Amanaje_API.DTOs;
+using Amanaje_API.Models;
 using Amanaje_API.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -38,6 +38,8 @@ namespace Amanaje_API.Controllers
                 DtCriadoEm = x.DtCriadoEm
             };
 
+        /// <summary>Sincroniza dados climáticos da OpenMeteo para uma região monitorada</summary>
+        /// <param name="idRegiao">Identificador da região monitorada a ser sincronizada</param>
         [HttpPost("sincronizar/{idRegiao}")]
         [SwaggerOperation(
             Summary = "Sincronizar dados climáticos externos",
@@ -51,7 +53,6 @@ namespace Amanaje_API.Controllers
             try
             {
                 var observacao = await _climaService.SincronizarAsync(idRegiao);
-
                 return Ok(MapToResponse(observacao));
             }
             catch (KeyNotFoundException ex)
@@ -64,6 +65,8 @@ namespace Amanaje_API.Controllers
             }
         }
 
+        /// <summary>Retorna a última observação climática registrada para uma região</summary>
+        /// <param name="idRegiao">Identificador da região monitorada</param>
         [HttpGet("regiao/{idRegiao}/ultima")]
         [SwaggerOperation(
             Summary = "Consultar última observação climática externa",
@@ -92,6 +95,7 @@ namespace Amanaje_API.Controllers
             }
         }
 
+        /// <summary>Lista as fontes climáticas externas configuradas no serviço</summary>
         [HttpGet("fontes")]
         [SwaggerOperation(
             Summary = "Listar fontes climáticas suportadas",

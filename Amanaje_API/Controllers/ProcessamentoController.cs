@@ -33,6 +33,7 @@ namespace Amanaje_API.Controllers
                 DtFim = x.DtFim
             };
 
+        /// <summary>Lista todos os processamentos registrados no sistema</summary>
         [HttpGet]
         [SwaggerOperation(
             Summary = "Lista todos os processamentos",
@@ -60,6 +61,8 @@ namespace Amanaje_API.Controllers
             }
         }
 
+        /// <summary>Busca um processamento pelo ID</summary>
+        /// <param name="id">Identificador único do processamento</param>
         [HttpGet("{id}")]
         [SwaggerOperation(
             Summary = "Busca processamento por ID",
@@ -87,6 +90,8 @@ namespace Amanaje_API.Controllers
             }
         }
 
+        /// <summary>Lista todos os processamentos vinculados a uma região</summary>
+        /// <param name="idRegiao">Identificador da região monitorada</param>
         [HttpGet("regiao/{idRegiao}")]
         [SwaggerOperation(
             Summary = "Lista processamentos por região",
@@ -115,6 +120,8 @@ namespace Amanaje_API.Controllers
             }
         }
 
+        /// <summary>Lista processamentos filtrados pelo status</summary>
+        /// <param name="status">Status do processamento: INICIADO, EM_EXECUCAO, CONCLUIDO, FALHOU, CANCELADO</param>
         [HttpGet("status/{status}")]
         [SwaggerOperation(
             Summary = "Lista processamentos por status",
@@ -143,6 +150,8 @@ namespace Amanaje_API.Controllers
             }
         }
 
+        /// <summary>Registra um novo processamento com status inicial INICIADO</summary>
+        /// <param name="model">Dados do processamento a ser registrado</param>
         [HttpPost]
         [SwaggerOperation(
             Summary = "Registrar processamento",
@@ -185,7 +194,5 @@ namespace Amanaje_API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
-
     }
 }
