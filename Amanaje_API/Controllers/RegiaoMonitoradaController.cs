@@ -33,7 +33,23 @@ namespace Amanaje_API.Controllers
                 TpVisib = x.TpVisib,
                 StAtivo = x.StAtivo,
                 DtCriadoEm = x.DtCriadoEm,
-                DtAtualizadoEm = x.DtAtualizadoEm
+                DtAtualizadoEm = x.DtAtualizadoEm,
+                Observacoes = x.Observacoes?
+                    .Select(o => new ObservacaoClimaticaResponseDto
+                    {
+                        IdObservacao = o.IdObservacao,
+                        IdRegiao = o.IdRegiao,
+                        NmFonte = o.NmFonte,
+                        NrTemperaturaC = o.NrTemperaturaC,
+                        NrUmidadePct = o.NrUmidadePct,
+                        NrPrecipMm = o.NrPrecipMm,
+                        NrVentoKmh = o.NrVentoKmh,
+                        NrPressaoHpa = o.NrPressaoHpa,
+                        NrRadiacaoSolar = o.NrRadiacaoSolar,
+                        NrIndiceUv = o.NrIndiceUv,
+                        DtObs = o.DtObs,
+                        DtCriadoEm = o.DtCriadoEm
+                    }).ToList() ?? []
             };
 
         [HttpGet]
@@ -50,6 +66,7 @@ namespace Amanaje_API.Controllers
             {
                 var resultado = await _context.RegiaoMonitorada
                     .Include(x => x.Cliente)
+                    .Include(x => x.Observacoes)
                     .ToListAsync();
 
                 if (!resultado.Any())
@@ -77,6 +94,7 @@ namespace Amanaje_API.Controllers
             {
                 var resultado = await _context.RegiaoMonitorada
                     .Include(x => x.Cliente)
+                    .Include(x => x.Observacoes)
                     .Where(x => x.StAtivo == "S")
                     .ToListAsync();
 
@@ -105,6 +123,7 @@ namespace Amanaje_API.Controllers
             {
                 var resultado = await _context.RegiaoMonitorada
                     .Include(x => x.Cliente)
+                    .Include(x => x.Observacoes)
                     .Where(x => x.StAtivo == "N")
                     .ToListAsync();
 
@@ -133,6 +152,7 @@ namespace Amanaje_API.Controllers
             {
                 var regiao = await _context.RegiaoMonitorada
                     .Include(x => x.Cliente)
+                    .Include(x => x.Observacoes)
                     .FirstOrDefaultAsync(x => x.IdRegiao == id);
 
                 if (regiao is null)
@@ -160,6 +180,7 @@ namespace Amanaje_API.Controllers
             {
                 var resultado = await _context.RegiaoMonitorada
                     .Include(x => x.Cliente)
+                    .Include(x => x.Observacoes)
                     .Where(x => x.StAtivo == "S" && x.IdCliente == idCliente)
                     .ToListAsync();
 
@@ -180,6 +201,7 @@ namespace Amanaje_API.Controllers
             Description = "Cria uma nova região monitorada vinculada a um cliente existente."
         )]
         [SwaggerResponse(statusCode: 201, description: "Região criada com sucesso", type: typeof(RegiaoMonitoradaResponseDto))]
+        [SwaggerResponse(statusCode: 409, description: "Já existe uma região com esse nome para o cliente informado")]
         [SwaggerResponse(statusCode: 404, description: "Cliente informado não encontrado")]
         [SwaggerResponse(statusCode: 400, description: "Erro ao criar a região", type: typeof(string))]
         public async Task<IActionResult> CreateRegiao(RegiaoMonitoradaCreateDto model)
@@ -231,6 +253,7 @@ namespace Amanaje_API.Controllers
             Description = "Atualiza os dados de uma região monitorada ativa existente."
         )]
         [SwaggerResponse(statusCode: 200, description: "Região atualizada com sucesso", type: typeof(RegiaoMonitoradaResponseDto))]
+        [SwaggerResponse(statusCode: 409, description: "Já existe outra região com esse nome para este cliente")]
         [SwaggerResponse(statusCode: 404, description: "Região não encontrada ou inativa")]
         [SwaggerResponse(statusCode: 400, description: "Erro ao atualizar os dados", type: typeof(string))]
         public async Task<IActionResult> UpdateRegiao(int id, RegiaoMonitoradaUpdateDto model)
@@ -239,6 +262,7 @@ namespace Amanaje_API.Controllers
             {
                 var regiao = await _context.RegiaoMonitorada
                     .Where(x => x.StAtivo == "S")
+                    .Include(x => x.Observacoes)
                     .FirstOrDefaultAsync(x => x.IdRegiao == id);
 
                 if (regiao is null)

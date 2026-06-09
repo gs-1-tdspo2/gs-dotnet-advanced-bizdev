@@ -15,5 +15,6 @@
         public string StAtivo { get; set; } = string.Empty;
         public DateTime DtCriadoEm { get; set; }
         public DateTime? DtAtualizadoEm { get; set; }
+        public ICollection<ObservacaoClimaticaResponseDto> Observacoes { get; set; } = [];
     }
 }
