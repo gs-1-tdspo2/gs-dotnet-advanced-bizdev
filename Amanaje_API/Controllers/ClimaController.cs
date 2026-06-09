@@ -1,4 +1,5 @@
 ﻿using Amanaje_API.Data;
+using Amanaje_API.Models;
 using Amanaje_API.DTOs;
 using Amanaje_API.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -20,6 +21,23 @@ namespace Amanaje_API.Controllers
             _context = context;
         }
 
+        private static ObservacaoClimaticaResponseDto MapToResponse(ObservacaoClimatica x) =>
+            new ObservacaoClimaticaResponseDto
+            {
+                IdObservacao = x.IdObservacao,
+                IdRegiao = x.IdRegiao,
+                NmFonte = x.NmFonte,
+                NrTemperaturaC = x.NrTemperaturaC,
+                NrUmidadePct = x.NrUmidadePct,
+                NrPrecipMm = x.NrPrecipMm,
+                NrVentoKmh = x.NrVentoKmh,
+                NrPressaoHpa = x.NrPressaoHpa,
+                NrRadiacaoSolar = x.NrRadiacaoSolar,
+                NrIndiceUv = x.NrIndiceUv,
+                DtObs = x.DtObs,
+                DtCriadoEm = x.DtCriadoEm
+            };
+
         [HttpPost("sincronizar/{idRegiao}")]
         [SwaggerOperation(
             Summary = "Sincronizar dados climáticos externos",
@@ -34,23 +52,7 @@ namespace Amanaje_API.Controllers
             {
                 var observacao = await _climaService.SincronizarAsync(idRegiao);
 
-                var response = new ObservacaoClimaticaResponseDto
-                {
-                    IdObservacao = observacao.IdObservacao,
-                    IdRegiao = observacao.IdRegiao,
-                    NmFonte = observacao.NmFonte,
-                    NrTemperaturaC = observacao.NrTemperaturaC,
-                    NrUmidadePct = observacao.NrUmidadePct,
-                    NrPrecipMm = observacao.NrPrecipMm,
-                    NrVentoKmh = observacao.NrVentoKmh,
-                    NrPressaoHpa = observacao.NrPressaoHpa,
-                    NrRadiacaoSolar = observacao.NrRadiacaoSolar,
-                    NrIndiceUv = observacao.NrIndiceUv,
-                    DtObs = observacao.DtObs,
-                    DtCriadoEm = observacao.DtCriadoEm
-                };
-
-                return Ok(response);
+                return Ok(MapToResponse(observacao));
             }
             catch (KeyNotFoundException ex)
             {
@@ -82,23 +84,7 @@ namespace Amanaje_API.Controllers
                 if (observacao is null)
                     return NotFound($"Nenhuma observação climática encontrada para a região com ID {idRegiao}.");
 
-                var response = new ObservacaoClimaticaResponseDto
-                {
-                    IdObservacao = observacao.IdObservacao,
-                    IdRegiao = observacao.IdRegiao,
-                    NmFonte = observacao.NmFonte,
-                    NrTemperaturaC = observacao.NrTemperaturaC,
-                    NrUmidadePct = observacao.NrUmidadePct,
-                    NrPrecipMm = observacao.NrPrecipMm,
-                    NrVentoKmh = observacao.NrVentoKmh,
-                    NrPressaoHpa = observacao.NrPressaoHpa,
-                    NrRadiacaoSolar = observacao.NrRadiacaoSolar,
-                    NrIndiceUv = observacao.NrIndiceUv,
-                    DtObs = observacao.DtObs,
-                    DtCriadoEm = observacao.DtCriadoEm
-                };
-
-                return Ok(response);
+                return Ok(MapToResponse(observacao));
             }
             catch (Exception ex)
             {

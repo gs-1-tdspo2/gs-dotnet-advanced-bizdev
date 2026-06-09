@@ -18,6 +18,23 @@ namespace Amanaje_API.Controllers
             _context = context;
         }
 
+        private static ObservacaoClimaticaResponseDto MapToResponse(ObservacaoClimatica x) =>
+            new ObservacaoClimaticaResponseDto
+            {
+                IdObservacao = x.IdObservacao,
+                IdRegiao = x.IdRegiao,
+                NmFonte = x.NmFonte,
+                NrTemperaturaC = x.NrTemperaturaC,
+                NrUmidadePct = x.NrUmidadePct,
+                NrPrecipMm = x.NrPrecipMm,
+                NrVentoKmh = x.NrVentoKmh,
+                NrPressaoHpa = x.NrPressaoHpa,
+                NrRadiacaoSolar = x.NrRadiacaoSolar,
+                NrIndiceUv = x.NrIndiceUv,
+                DtObs = x.DtObs,
+                DtCriadoEm = x.DtCriadoEm
+            };
+
         [HttpGet]
         [SwaggerOperation(
             Summary = "Lista todas as observações climáticas",
@@ -37,23 +54,7 @@ namespace Amanaje_API.Controllers
                 if (!resultado.Any())
                     return NoContent();
 
-                var response = resultado.Select(x => new ObservacaoClimaticaResponseDto
-                {
-                    IdObservacao = x.IdObservacao,
-                    IdRegiao = x.IdRegiao,
-                    NmFonte = x.NmFonte,
-                    NrTemperaturaC = x.NrTemperaturaC,
-                    NrUmidadePct = x.NrUmidadePct,
-                    NrPrecipMm = x.NrPrecipMm,
-                    NrVentoKmh = x.NrVentoKmh,
-                    NrPressaoHpa = x.NrPressaoHpa,
-                    NrRadiacaoSolar = x.NrRadiacaoSolar,
-                    NrIndiceUv = x.NrIndiceUv,
-                    DtObs = x.DtObs,
-                    DtCriadoEm = x.DtCriadoEm
-                });
-
-                return Ok(response);
+                return Ok(resultado.Select(MapToResponse));
             }
             catch (Exception ex)
             {
@@ -80,23 +81,7 @@ namespace Amanaje_API.Controllers
                 if (observacao is null)
                     return NotFound();
 
-                var response = new ObservacaoClimaticaResponseDto
-                {
-                    IdObservacao = observacao.IdObservacao,
-                    IdRegiao = observacao.IdRegiao,
-                    NmFonte = observacao.NmFonte,
-                    NrTemperaturaC = observacao.NrTemperaturaC,
-                    NrUmidadePct = observacao.NrUmidadePct,
-                    NrPrecipMm = observacao.NrPrecipMm,
-                    NrVentoKmh = observacao.NrVentoKmh,
-                    NrPressaoHpa = observacao.NrPressaoHpa,
-                    NrRadiacaoSolar = observacao.NrRadiacaoSolar,
-                    NrIndiceUv = observacao.NrIndiceUv,
-                    DtObs = observacao.DtObs,
-                    DtCriadoEm = observacao.DtCriadoEm
-                };
-
-                return Ok(response);
+                return Ok(MapToResponse(observacao));
             }
             catch (Exception ex)
             {
@@ -124,23 +109,7 @@ namespace Amanaje_API.Controllers
                 if (!resultado.Any())
                     return NoContent();
 
-                var response = resultado.Select(x => new ObservacaoClimaticaResponseDto
-                {
-                    IdObservacao = x.IdObservacao,
-                    IdRegiao = x.IdRegiao,
-                    NmFonte = x.NmFonte,
-                    NrTemperaturaC = x.NrTemperaturaC,
-                    NrUmidadePct = x.NrUmidadePct,
-                    NrPrecipMm = x.NrPrecipMm,
-                    NrVentoKmh = x.NrVentoKmh,
-                    NrPressaoHpa = x.NrPressaoHpa,
-                    NrRadiacaoSolar = x.NrRadiacaoSolar,
-                    NrIndiceUv = x.NrIndiceUv,
-                    DtObs = x.DtObs,
-                    DtCriadoEm = x.DtCriadoEm
-                });
-
-                return Ok(response);
+                return Ok(resultado.Select(MapToResponse));
             }
             catch (Exception ex)
             {
@@ -169,23 +138,7 @@ namespace Amanaje_API.Controllers
                 if (observacao is null)
                     return NotFound();
 
-                var response = new ObservacaoClimaticaResponseDto
-                {
-                    IdObservacao = observacao.IdObservacao,
-                    IdRegiao = observacao.IdRegiao,
-                    NmFonte = observacao.NmFonte,
-                    NrTemperaturaC = observacao.NrTemperaturaC,
-                    NrUmidadePct = observacao.NrUmidadePct,
-                    NrPrecipMm = observacao.NrPrecipMm,
-                    NrVentoKmh = observacao.NrVentoKmh,
-                    NrPressaoHpa = observacao.NrPressaoHpa,
-                    NrRadiacaoSolar = observacao.NrRadiacaoSolar,
-                    NrIndiceUv = observacao.NrIndiceUv,
-                    DtObs = observacao.DtObs,
-                    DtCriadoEm = observacao.DtCriadoEm
-                };
-
-                return Ok(response);
+                return Ok(MapToResponse(observacao));
             }
             catch (Exception ex)
             {
@@ -229,7 +182,7 @@ namespace Amanaje_API.Controllers
                 _context.ObservacaoClimatica.Add(observacao);
                 await _context.SaveChangesAsync();
 
-                return CreatedAtAction(nameof(GetObservacaoById), new { id = observacao.IdObservacao }, observacao);
+                return CreatedAtAction(nameof(GetObservacaoById), new { id = observacao.IdObservacao }, MapToResponse(observacao));
             }
             catch (Exception ex)
             {
@@ -255,10 +208,12 @@ namespace Amanaje_API.Controllers
                 if (observacao is null)
                     return NotFound();
 
+                var response = MapToResponse(observacao);
+
                 _context.ObservacaoClimatica.Remove(observacao);
                 await _context.SaveChangesAsync();
 
-                return Ok(observacao);
+                return Ok(response);
             }
             catch (Exception ex)
             {
